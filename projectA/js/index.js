@@ -2,6 +2,7 @@ if (window.location.protocol === "https:") {
   window.location.href = window.location.href.replace("https:", "http:");
 } //학원페이지가 https 일 경우 kmdb api요청 안되서 http로 변환
 
+closeBt.addEventListener('click', ()=>{ CORSpop.style.display = 'none' });
 let day = new Date();
 
 let year = day.getFullYear();
@@ -51,7 +52,7 @@ async function moviePosterFnc(movieName, movieOpenDate) {
     // if (movieName[i].indexOf("!") !== -1)
     //   moviePosterValue.title = `&query=${movieName[i].replace(/!/g, "")}`;
     // kmdb에서 제목에 ! 있으면 제대로 찾질 못함
-    const url = `https://runauxlabs.herokuapp.com/https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
+    const url = `https://cors-anywhere.herokuapp.com/https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
     try{
       const response = await fetch(url);
       const data = await response.json();
@@ -77,30 +78,53 @@ async function moviePosterFnc(movieName, movieOpenDate) {
   }
 }
 
-async function kakaoMovieVideoFnc(movieName) {
-  const incodingMovie = encodeURIComponent("영화 예고편");
-  for (let i = 0; i < movieName.length; i++) {
-    const kakaoVedio = `https://dapi.kakao.com/v2/search/vclip.json?query=${movieName[i]} ${incodingMovie}`;
-    const response = await fetch(kakaoVedio, {
-      headers: {
-        Authorization: `KakaoAK ddcd7e848b0a8daaeb4a77912c305d8e`,
-        // Authorization: `KakaoAK 433521c4090e21edd9510cfadfaef92a`,
-      },
-    });
-    const data = await response.json();
-    for (let j = 0; j < data.documents.length; j++) {
-      const kakaoMovie = `http://tv.kakao.com/`;
-      if (data.documents[j].url.indexOf(kakaoMovie) !== -1) {
-        let movieValue = data.documents[j].url.split(
-          `http://tv.kakao.com/`
-        )[1];
-        movieDetailArray[i].iframeSrc = movieValue;
-        break;
-      }
-    }
-  }
-}
+// 카카오TV API가 요청 변수가 많아 수정
+// async function kakaoMovieVideoFnc(movieName) {
+//   const incodingMovie = encodeURIComponent("영화 예고편");
+//   for (let i = 0; i < movieName.length; i++) {
+//     const kakaoVedio = `https://dapi.kakao.com/v2/search/vclip.json?query=${movieName[i]} ${incodingMovie}`;
+//     const response = await fetch(kakaoVedio, {
+//       headers: {
+//         Authorization: `KakaoAK ddcd7e848b0a8daaeb4a77912c305d8e`,
+//       },
+//     });
+//     const data = await response.json();
+//     for (let j = 0; j < 10; j++) {
+//       const kakaoMovie = `http://tv.kakao.com/`;
+//       if (data.documents[j].url.indexOf(kakaoMovie) !== -1) {
+//         let movieValue = data.documents[j].url.split(
+//           `http://tv.kakao.com/`
+//         )[1];
+//         movieDetailArray[i].iframeSrc = movieValue;
+//         break;
+//       }
+//     }
+//   }
+// }
 
+// TMDB로 수정
+// async function TMDBFnc(movieName) {
+//   const incodingMovie = encodeURIComponent("영화 예고편");
+//   for (let i = 0; i < movieName.length; i++) {
+//     const kakaoVedio = `https://dapi.kakao.com/v2/search/vclip.json?query=${movieName[i]} ${incodingMovie}`;
+//     const response = await fetch(kakaoVedio, {
+//       headers: {
+//         Authorization: `KakaoAK ddcd7e848b0a8daaeb4a77912c305d8e`,
+//       },
+//     });
+//     const data = await response.json();
+//     for (let j = 0; j < 10; j++) {
+//       const kakaoMovie = `http://tv.kakao.com/`;
+//       if (data.documents[j].url.indexOf(kakaoMovie) !== -1) {
+//         let movieValue = data.documents[j].url.split(
+//           `http://tv.kakao.com/`
+//         )[1];
+//         movieDetailArray[i].iframeSrc = movieValue;
+//         break;
+//       }
+//     }
+//   }
+// }
 const $posterImg = document.querySelectorAll(".swiper-slide img");
 const $posterLi = document.querySelectorAll(".swiper-slide");
 const $sec02 = document.querySelector(".sec02");
@@ -338,10 +362,12 @@ async function apiStart() {
     boxOfficeRankingResult[0],
     boxOfficeRankingResult[1]
   );
-  const kakaoMovieResult = kakaoMovieVideoFnc(boxOfficeRankingResult[0]);
+  // const TMDBResult = TMDBFnc(boxOfficeRankingResult[0]);
+  // const kakaoMovieResult = kakaoMovieVideoFnc(boxOfficeRankingResult[0]);
 
   await kmdbPosterResult; // 속도향상을 위한 코드 (1번째 데이터를 가지고 2, 3번 동시에 받아올 수 있음)
-  await kakaoMovieResult;
+  // await TMDBResult;
+  // await kakaoMovieResult;
   loadingRemoveTag();
   posterTag();
   swiper();
