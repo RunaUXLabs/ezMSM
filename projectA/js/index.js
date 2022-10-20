@@ -2,7 +2,7 @@ if (window.location.protocol === "https:") {
   window.location.href = window.location.href.replace("https:", "http:");
 } //학원페이지가 https 일 경우 kmdb api요청 안되서 http로 변환
 
-closeBt.addEventListener('click', ()=>{ CORSpop.style.display = 'none' });
+// closeBt.addEventListener('click', ()=>{ CORSpop.style.display = 'none' });
 let day = new Date();
 
 let year = day.getFullYear();
@@ -19,8 +19,9 @@ let movieDetailObject = {};
 let yesterday = `&targetDt=${year}${month}${date}`;
 
 async function boxofficeFnc() {
-  const boxOfficeKey = `?key=3827aa7cac5664d5dbbc626db975d1b9	`;
-  const moveLankingUrl = `https://runauxlabs.herokuapp.com/https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json${boxOfficeKey}${yesterday}`; //수정필요
+  const boxOfficeKey = `?key=3827aa7cac5664d5dbbc626db975d1b9`;
+  const moveLankingUrl = `https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json${boxOfficeKey}${yesterday}`; //수정필요
+  // const moveLankingUrl = `https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=3827aa7cac5664d5dbbc626db975d1b9&targetDt=20221019`; //수정필요
   const response = await fetch(moveLankingUrl);
   const data = await response.json();
   let openDays = [];
@@ -52,7 +53,7 @@ async function moviePosterFnc(movieName, movieOpenDate) {
     // if (movieName[i].indexOf("!") !== -1)
     //   moviePosterValue.title = `&query=${movieName[i].replace(/!/g, "")}`;
     // kmdb에서 제목에 ! 있으면 제대로 찾질 못함
-    const url = `https://runauxlabs.herokuapp.com/https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
+    const url = `https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
     try{
       const response = await fetch(url);
       const data = await response.json();
@@ -61,8 +62,7 @@ async function moviePosterFnc(movieName, movieOpenDate) {
       let mainPoster = posters.split("|")[0]; //여러개 이미지를 |를 기준으로 잘라서 첫번째 배열을 가져오기
       movieDetailArray[i].poster = mainPoster;
       movieDetailArray[i].openingDate = dataResult.repRlsDate;
-      movieDetailArray[i].directorNm =
-        dataResult.directors.director[0].directorNm;
+      movieDetailArray[i].directorNm = dataResult.directors.director[0].directorNm;
       movieDetailArray[i].actor = dataResult.actors.actor;
       movieDetailArray[i].runtime = dataResult.runtime;
       movieDetailArray[i].genre = dataResult.genre;
@@ -71,7 +71,7 @@ async function moviePosterFnc(movieName, movieOpenDate) {
       movieDetailArray[i].plots = dataResult.plots.plot[0].plotText;
       movieDetailArray[i].company = dataResult.company;
     }catch(e){
-      movieDetailArray[i].poster = "none.png";
+      movieDetailArray[i].poster = "noPoster.png";
       movieDetailArray[i].openingDate = "no data";
       movieDetailArray[i].plots = "죄송합니다. API에서 정보를 찾을 수 없습니다.";
     }
@@ -319,24 +319,24 @@ function loadingRemoveTag() {
   const $etc = document.querySelector(".sec02 .etc");
   $etc.classList.add("line");
 }
-
-function reflectEffect() {
-  var bodyTag = document.body;
-  var bodyBackColor = document.defaultView
-    .getComputedStyle(bodyTag)
-    .getPropertyValue("background-color");
-  var bodyRGB = bodyBackColor.substring(
-    bodyBackColor.indexOf("(") + 1,
-    bodyBackColor.indexOf(")")
-  );
-  for (let i = 0; i < movieDetailArray.length; i++) {
-    var gradient = `linear-gradient(to top, rgba(${bodyRGB}, 0.6) 10%, rgba(${bodyRGB}, 0.8) 25%, rgb(${bodyRGB}) 30%)`;
-    document.styleSheets[0].insertRule(
-      `.poster${i}::after{background-image:${gradient}, url('${movieDetailArray[i].poster}');}`,
-      0
-    );
-  }
-}
+// babel에서 문제가 일어나 우선 금지
+// function reflectEffect() {
+//   var bodyTag = document.body;
+//   var bodyBackColor = document.defaultView
+//     .getComputedStyle(bodyTag)
+//     .getPropertyValue("background-color");
+//   var bodyRGB = bodyBackColor.substring(
+//     bodyBackColor.indexOf("(") + 1,
+//     bodyBackColor.indexOf(")")
+//   );
+//   for (let i = 0; i < movieDetailArray.length; i++) {
+//     var gradient = `linear-gradient(to top, rgba(${bodyRGB}, 0.6) 10%, rgba(${bodyRGB}, 0.8) 25%, rgb(${bodyRGB}) 30%)`;
+//     document.styleSheets[0].insertRule(
+//       `.poster${i}::after{background-image:${gradient}, url('${movieDetailArray[i].poster}');}`,
+//       0
+//     );
+//   }
+// }
 const $iframeDiv = document.querySelector(".iframe");
 (function resizeFcn() {
   window.addEventListener("resize", function () {
@@ -372,6 +372,6 @@ async function apiStart() {
   posterTag();
   swiper();
   posterClick();
-  reflectEffect();
+  // reflectEffect();
 }
 apiStart();
