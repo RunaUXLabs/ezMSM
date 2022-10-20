@@ -52,7 +52,7 @@ async function moviePosterFnc(movieName, movieOpenDate) {
     // if (movieName[i].indexOf("!") !== -1)
     //   moviePosterValue.title = `&query=${movieName[i].replace(/!/g, "")}`;
     // kmdb에서 제목에 ! 있으면 제대로 찾질 못함
-    const url = `https://cors-anywhere.herokuapp.com/https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
+    const url = `https://runauxlabs.herokuapp.com/https://api.koreafilm.or.kr/openapi-data2/wisenut/search_api/search_json2.jsp${moviePosterValue.key}${moviePosterValue.collection}${moviePosterValue.title}${moviePosterValue.openDay}${moviePosterValue.sort}`;
     try{
       const response = await fetch(url);
       const data = await response.json();
